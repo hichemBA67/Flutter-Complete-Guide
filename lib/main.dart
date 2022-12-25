@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import './question.dart';
+import './quiz.dart';
+import './answer.dart';
+import './result.dart';
 
 // void main() {
 //   runApp(MyApp());
@@ -11,6 +13,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
+    // TODO: implement createState
     return _MyAppState();
   }
 }
@@ -18,17 +21,56 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
 
-  void _answerQuestion() {
-    setState(() {
-      _questionIndex++;
-      print(_questionIndex);
-    });
+  final _questions = const [
+    {
+      'questionText': 'What\'s your favorite color?',
+      'answers': [
+        {'text': 'Black', 'score': 10},
+        {'text': 'Red', 'score': 5},
+        {'text': 'Green', 'score': 3},
+        {'text': 'White', 'score': 1},
+      ],
+    },
+    {
+      'questionText': 'What\'s your favorite animal?',
+      'answers': [
+        {'text': 'Rabbit', 'score': 3},
+        {'text': 'Snake', 'score': 11},
+        {'text': 'Elephant', 'score': 5},
+        {'text': 'Lion', 'score': 9},
+      ],
+    },
+    {
+      'questionText': 'Who\'s your favorite instructor?',
+      'answers': [
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+      ],
+    },
+  ];
+
+  var _totalScore = 0;
+  void _answerQuestion(int score) {
+    _totalScore += score;
+    if (_questionIndex < _questions.length) {
+      setState(() {
+        _questionIndex = _questionIndex + 1;
+        print(_questionIndex);
+      });
+    } else {
+      print("We have no more _questions");
+      return;
+    }
   }
 
-  var questions = [
-    'What\'s your favorite color?',
-    'What\'s your favorite animal?'
-  ];
+  void _resetQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +79,12 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('My First App'),
         ),
-        body: Column(children: [
-          Question(questions[_questionIndex]),
-          ElevatedButton(child: Text('Answer 1'), onPressed: _answerQuestion),
-          ElevatedButton(
-              child: Text('Answer 2'),
-              onPressed: () => print('Answer 2 chosen!')),
-          ElevatedButton(
-              child: Text('Answer 3'),
-              onPressed: () => {
-                    print('Answer 3 chosen!'),
-                  }),
-        ]),
+        body: _questionIndex < _questions.length
+            ? Quiz(
+                answerQuestions: _answerQuestion,
+                questions: _questions,
+                questionIndex: _questionIndex)
+            : Result(_totalScore, _resetQuiz),
       ),
     );
   }
