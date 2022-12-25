@@ -33,7 +33,7 @@ class Result extends StatelessWidget {
             style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: resetHandler,
             child: Text('Restart'),
             style: ButtonStyle(
